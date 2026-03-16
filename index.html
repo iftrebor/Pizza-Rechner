@@ -68,6 +68,17 @@
       width:100%;height:54px;border-radius:16px;border:1px solid var(--line);background:var(--card-2);color:var(--text);
       padding:0 14px;font-size:18px;font-weight:650;outline:none;
     }
+    .stepper{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:center}
+    .stepper-btn{height:58px;border-radius:16px;border:1px solid var(--line);background:var(--card-2);color:var(--text);font-size:2rem;font-weight:800;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+    .stepper-btn:active{transform:scale(.98)}
+    .stepper input{text-align:center;padding:0 8px;height:58px;font-size:1.15rem}
+    .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{appearance:none;-webkit-appearance:none;margin:0}
+    .stepper input[type=number]{appearance:textfield;-moz-appearance:textfield}
+    @media (max-width:640px){
+      .stepper{grid-template-columns:72px 1fr 72px}
+      .stepper-btn{height:64px;font-size:2.15rem}
+      .stepper input{height:64px;font-size:1.2rem}
+    }
     input:focus, select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(249,115,22,.18)}
     .headline{font-size:1rem;font-weight:800;margin:0 0 10px}
     .muted{color:var(--muted)}
@@ -350,12 +361,17 @@
             <option value="romana">Römische Pizza</option>
             <option value="blech">Blechpizza</option>
             <option value="detroit">Detroit Style</option>
+            <option value="sourdough">Sauerteigpizza</option>
           </select>
           <div class="hint" id="styleHint">Vorläufiger Preset – bitte später mit deinem Originalrezept schärfen.</div>
         </div>
         <div>
           <label for="ferment">Garzeit gesamt (h)</label>
-          <input id="ferment" type="number" min="4" max="72" step="1" value="24" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="ferment" data-dir="-1" aria-label="Garzeit verringern">−</button>
+            <input id="ferment" type="number" min="4" max="72" step="1" value="24" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="ferment" data-dir="1" aria-label="Garzeit erhöhen">+</button>
+          </div>
           <div class="hint">Die Hefe wird als Näherung aus der Basis-Garzeit skaliert.</div>
         </div>
       </div>
@@ -363,33 +379,57 @@
       <div class="grid two" style="margin-top:12px">
         <div>
           <label for="count">Anzahl Pizzen / Bleche</label>
-          <input id="count" type="number" min="1" max="20" step="1" value="4" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="count" data-dir="-1" aria-label="Anzahl verringern">−</button>
+            <input id="count" type="number" min="1" max="20" step="1" value="4" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="count" data-dir="1" aria-label="Anzahl erhöhen">+</button>
+          </div>
         </div>
         <div>
           <label for="ball">Teigballengröße bzw. Teigstück (g)</label>
-          <input id="ball" type="number" min="100" max="1200" step="5" value="260" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="ball" data-dir="-1" aria-label="Teigstück verringern">−</button>
+            <input id="ball" type="number" min="100" max="1200" step="5" value="260" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="ball" data-dir="1" aria-label="Teigstück erhöhen">+</button>
+          </div>
         </div>
       </div>
 
       <div class="grid two" style="margin-top:12px">
         <div>
           <label for="hydration">Hydration (%)</label>
-          <input id="hydration" type="number" min="50" max="90" step="0.5" value="65" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="hydration" data-dir="-1" aria-label="Hydration verringern">−</button>
+            <input id="hydration" type="number" min="50" max="90" step="5" value="65" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="hydration" data-dir="1" aria-label="Hydration erhöhen">+</button>
+          </div>
         </div>
         <div>
           <label for="salt">Salz (%)</label>
-          <input id="salt" type="number" min="1.5" max="4.5" step="0.1" value="2.8" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="salt" data-dir="-1" aria-label="Salz verringern">−</button>
+            <input id="salt" type="number" min="1.5" max="4.5" step="0.1" value="2.8" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="salt" data-dir="1" aria-label="Salz erhöhen">+</button>
+          </div>
         </div>
       </div>
 
       <div class="grid two" style="margin-top:12px">
         <div>
           <label for="oil">Olivenöl (%)</label>
-          <input id="oil" type="number" min="0" max="8" step="0.1" value="0" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="oil" data-dir="-1" aria-label="Öl verringern">−</button>
+            <input id="oil" type="number" min="0" max="8" step="0.1" value="0" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="oil" data-dir="1" aria-label="Öl erhöhen">+</button>
+          </div>
         </div>
         <div>
           <label for="prefermentPct">Vorteig-Anteil bezogen auf Mehl (%)</label>
-          <input id="prefermentPct" type="number" min="0" max="80" step="1" value="30" inputmode="decimal" enterkeyhint="done">
+          <div class="stepper">
+            <button class="stepper-btn" type="button" data-target="prefermentPct" data-dir="-1" aria-label="Vorteiganteil verringern">−</button>
+            <input id="prefermentPct" type="number" min="0" max="80" step="1" value="30" inputmode="decimal" enterkeyhint="done">
+            <button class="stepper-btn" type="button" data-target="prefermentPct" data-dir="1" aria-label="Vorteiganteil erhöhen">+</button>
+          </div>
           <div class="hint" id="prefermentHint">100 %-Hydration Poolish</div>
         </div>
       </div>
@@ -412,13 +452,24 @@
         </div>
       </div>
 
+      <div class="grid two" style="margin-top:12px">
+        <div class="card" style="margin:0;padding:14px;background:var(--card-2)">
+          <div class="headline">Kurzanleitung</div>
+          <ul id="guideList"></ul>
+        </div>
+        <div class="card" style="margin:0;padding:14px;background:var(--card-2)">
+          <div class="headline">Garzeit & Ablauf</div>
+          <ul id="timingList"></ul>
+        </div>
+      </div>
+
       <div class="card" style="margin:12px 0 0;padding:14px;background:var(--card-2)">
         <div class="headline">Hinweise</div>
         <ul id="notesList"></ul>
       </div>
     </section>
 
-    <div class="footer">Stand dieser Version: Quellenlinks ergänzt und Heferezepte auf Trockenhefe vereinheitlicht.</div>
+    <div class="footer">Stand dieser Version: Quellenlinks ergänzt, Heferezepte auf Trockenhefe vereinheitlicht und Touch-Stepper für iPhone ergänzt.</div>
   </main>
 
   <script>
@@ -485,6 +536,19 @@
         baseHours: 16,
         baseYeastPct: 0.57,
         note: 'Aus deinem gelieferten Rezept abgeleitet.'
+      },
+      sourdough: {
+        label: 'Sauerteigpizza',
+        count: 6,
+        ball: 265,
+        hydration: 65,
+        salt: 2.7,
+        oil: 0,
+        prefermentPct: 20,
+        prefermentType: 'Sauerteig',
+        baseHours: 30,
+        baseYeastPct: 0,
+        note: 'Aus dem Marcel-Paa-Rezept übernommen. Dieser Preset rechnet ohne Trockenhefe und mit Sauerteig-Vorteig.'
       }
     };
 
@@ -508,7 +572,7 @@
       $('prefermentPct').value = p.prefermentPct;
       $('ferment').value = p.baseHours;
       $('styleHint').textContent = p.note;
-      $('prefermentHint').textContent = p.prefermentType === 'Direktteig' ? 'Kein separater Vorteig vorgesehen' : '100 %-Hydration Poolish';
+      $('prefermentHint').textContent = p.prefermentType === 'Direktteig' ? 'Kein separater Vorteig vorgesehen' : (p.prefermentType === 'Sauerteig' ? 'Sauerteig-Vorteig aus Anstellgut, Wasser und Mehl' : '100 %-Hydration Poolish');
       compute();
     }
 
@@ -529,28 +593,113 @@
       lines.forEach((line) => list.appendChild(li(line)));
     }
 
+    function buildGuideAndTiming(styleKey, ferment, count, ball) {
+      const totalDoughText = `${count} × ${grams(ball)} = ${grams(count * ball)}`;
+      if (styleKey === 'napoli') {
+        return {
+          guide: [
+            'Poolish anrühren und 1 Stunde anspringen lassen.',
+            'Poolish mit restlichen Zutaten zu einem glatten Hauptteig mischen.',
+            'Teiglinge rund wirken und schonend in Boxen setzen.',
+            'Vor dem Backen vorsichtig ausformen, belegen und sehr heiß backen.'
+          ],
+          timing: [
+            `Gesamtansatz aktuell auf ${ferment} h skaliert. Originalrezept etwa 36–50 h inklusive Kaltgare.`,
+            'Poolish: erst kurz bei Raumtemperatur, dann 16–24 h kalt.',
+            'Hauptteig: danach erneut 16–24 h kalt führen.',
+            'Vor dem Backen 1–2 h akklimatisieren und 2–4 h Stückgare einplanen.'
+          ]
+        };
+      }
+      if (styleKey === 'romana') {
+        return {
+          guide: [
+            'Alle Zutaten zu einem glatten, eher festen Teig kneten.',
+            'Nach kurzer Stockgare kalt führen.',
+            'Vor dem Backen rechtzeitig temperieren lassen und sehr dünn ausformen.',
+            'Sparsam belegen und knusprig ausbacken.'
+          ],
+          timing: [
+            `Gesamtteig aktuell ${totalDoughText}. Originalrezept liegt bei rund 17 h Gesamtgare.`,
+            'Etwa 60 Minuten Stockgare bei Raumtemperatur.',
+            'Danach ca. 12 h Kühlschrank.',
+            'Vor dem Backen rund 4 h bei Raumtemperatur akklimatisieren.'
+          ]
+        };
+      }
+      if (styleKey === 'blech') {
+        return {
+          guide: [
+            'Direktteig mischen und nur kurz bis mittlere Glutenentwicklung kneten.',
+            'Nach der Kaltgare direkt im geölten oder bemehlten Blech ausziehen.',
+            'Zuerst nur mit Tomatensauce vorbacken.',
+            'Dann belegen und ohne Blech bzw. direkt auf Stein fertig backen.'
+          ],
+          timing: [
+            `Gesamtteig aktuell ${totalDoughText}. Originalrezept liegt bei etwa 18–19 h.`,
+            'Ca. 2 h Ruhe bei Raumtemperatur.',
+            'Danach über Nacht in den Kühlschrank.',
+            '4–5 h vor dem Essen herausnehmen und entspannen lassen.'
+          ]
+        };
+      }
+      if (styleKey === 'detroit') {
+        return {
+          guide: [
+            'Poolish anrühren und anspringen lassen.',
+            'Mit den restlichen Zutaten zum Hauptteig mischen und bis Verdopplung gehen lassen.',
+            'Teig kugeln, ins gefettete Blech legen und schrittweise ausziehen.',
+            'Mit Sauce vorbacken, dann belegen und fertig backen.'
+          ],
+          timing: [
+            `Gesamtteig aktuell ${totalDoughText}. Originalrezept liegt bei rund 16 h.`,
+            'Poolish: etwa 2 h bei Raumtemperatur, dann über Nacht kalt.',
+            'Hauptteig: danach ca. 2 h bei Raumtemperatur bis Verdopplung.',
+            'Nach dem Ausziehen direkt backen: erst 6–8 Min. mit Sauce, dann fertig backen.'
+          ]
+        };
+      }
+      return {
+        guide: [
+          'Sauerteig-Vorteig mit Anstellgut, Wasser und Mehl ansetzen.',
+          'Nach der Reife den Hauptteig mischen und 2× dehnen und falten.',
+          'Teiglinge rund wirken und in die Gärbox setzen.',
+          'Vor dem Backen akklimatisieren, schonend ausformen und belegen.'
+        ],
+        timing: [
+          `Gesamtteig aktuell ${totalDoughText}. Originalrezept liegt bei etwa 22–39 h Gesamtzeit.`,
+          'Sauerteig-Vorteig: 8–12 h bei Raumtemperatur.',
+          'Hauptteig: etwa 1 h Raumtemperatur, dabei 2× dehnen und falten.',
+          'Nach dem Formen 1 h Raumtemperatur, dann 12–24 h Kühlschrank und vor dem Backen 2 h akklimatisieren.'
+        ]
+      };
+    }
+
     function compute() {
       const styleKey = $('style').value;
       const preset = presets[styleKey];
       const count = clamp(val('count', preset.count), 1, 20);
       const ball = clamp(val('ball', preset.ball), 100, 1200);
-      const hydration = clamp(val('hydration', preset.hydration), 50, 90);
+      const hydration = clamp(roundToStep(val('hydration', preset.hydration), 5, 50), 50, 90);
       const saltPct = clamp(val('salt', preset.salt), 1.5, 4.5);
       const oilPct = clamp(val('oil', preset.oil), 0, 8);
       const prefermentPct = clamp(val('prefermentPct', preset.prefermentPct), 0, 80);
       const ferment = clamp(val('ferment', preset.baseHours), 4, 72);
+
+      $('hydration').value = String(hydration).replace('.', ',');
 
       const totalDough = count * ball;
       const flour = totalDough / (1 + hydration / 100 + saltPct / 100 + oilPct / 100);
       const water = flour * hydration / 100;
       const salt = flour * saltPct / 100;
       const oil = flour * oilPct / 100;
-      const yeastPct = yeastPctForHours(preset.baseYeastPct, preset.baseHours, ferment);
+      const yeastPct = preset.prefermentType === 'Sauerteig' ? 0 : yeastPctForHours(preset.baseYeastPct, preset.baseHours, ferment);
       const yeast = flour * yeastPct / 100;
 
       const prefermentFlour = flour * prefermentPct / 100;
       const prefermentWater = preset.prefermentType === 'Direktteig' ? 0 : prefermentFlour;
-      const prefermentYeast = preset.prefermentType === 'Direktteig' ? 0 : yeast * 0.6;
+      const sourdoughSeed = preset.prefermentType === 'Sauerteig' ? prefermentFlour * 0.1 : 0;
+      const prefermentYeast = preset.prefermentType === 'Direktteig' || preset.prefermentType === 'Sauerteig' ? 0 : yeast * 0.6;
       const mainFlour = flour - prefermentFlour;
       const mainWater = water - prefermentWater;
       const mainYeast = yeast - prefermentYeast;
@@ -558,39 +707,77 @@
       $('outDough').textContent = grams(totalDough);
       $('outFlour').textContent = grams(flour);
       $('outWater').textContent = grams(water);
-      $('outYeast').textContent = grams(yeast);
+      $('outYeast').textContent = preset.prefermentType === 'Sauerteig' ? '–' : grams(yeast);
 
       const mainLines = [
         `Mehl: ${grams(mainFlour)}`,
         `Wasser: ${grams(mainWater)}`,
         `Salz: ${grams(salt)}`,
         `Olivenöl: ${grams(oil)}`,
-        `Trockenhefe: ${grams(mainYeast)}`
+        preset.prefermentType === 'Sauerteig' ? 'Trockenhefe: keine' : `Trockenhefe: ${grams(mainYeast)}`
       ];
 
-      const prefermentLines = preset.prefermentType === 'Direktteig'
-        ? ['Kein separater Vorteig für diesen Preset vorgesehen.']
-        : [
-            `${preset.prefermentType}: ${percent(prefermentPct)} des Mehls`,
-            `Mehl: ${grams(prefermentFlour)}`,
-            `Wasser: ${grams(prefermentWater)}`,
-            `Trockenhefe: ${grams(prefermentYeast)}`
-          ];
+      let prefermentLines;
+      if (preset.prefermentType === 'Direktteig') {
+        prefermentLines = ['Kein separater Vorteig für diesen Preset vorgesehen.'];
+      } else if (preset.prefermentType === 'Sauerteig') {
+        prefermentLines = [
+          `Sauerteig-Vorteig: ${percent(prefermentPct)} des Mehls`,
+          `Mehl: ${grams(prefermentFlour)}`,
+          `Wasser: ${grams(prefermentWater)}`,
+          `Anstellgut (ca. 10 % der Vorteigmehlmenge): ${grams(sourdoughSeed)}`
+        ];
+      } else {
+        prefermentLines = [
+          `${preset.prefermentType}: ${percent(prefermentPct)} des Mehls`,
+          `Mehl: ${grams(prefermentFlour)}`,
+          `Wasser: ${grams(prefermentWater)}`,
+          `Trockenhefe: ${grams(prefermentYeast)}`
+        ];
+      }
 
       const notes = [
         `${preset.label}: ${preset.note}`,
-        `Hefe-Näherung: Basis ${percent(preset.baseYeastPct)} bei ${preset.baseHours} h → skaliert auf ${ferment} h ergibt ${percent(yeastPct)}.`,
         `Hydration ${percent(hydration)}, Salz ${percent(saltPct)}, Öl ${percent(oilPct)}.`,
+        preset.prefermentType === 'Sauerteig'
+          ? 'Sauerteigpizza wird ohne Trockenhefe gerechnet. Die Anzeige des Anstellguts ist eine praxisnahe Näherung, passend zum Originalrezept mit 20 g Sauerteig auf 200 g Vorteigmehl.'
+          : `Hefe-Näherung: Basis ${percent(preset.baseYeastPct)} bei ${preset.baseHours} h → skaliert auf ${ferment} h ergibt ${percent(yeastPct)}.`,
         preset.prefermentType === 'Direktteig'
-          ? 'Für Blechpizza ist aktuell kein separater Vorteig hinterlegt.'
-          : `Vorteig aktuell als ${preset.prefermentType} mit 100 % Hydration gerechnet.`,
-        'Für wirklich belastbare Hefemengen bei sehr kurzer oder sehr langer Gare braucht die App später noch Temperatur und genauere Gärlogik.'
+          ? 'Für diesen Stil ist aktuell kein separater Vorteig hinterlegt.'
+          : (preset.prefermentType === 'Sauerteig' ? 'Vorteig wird als Sauerteig-Vorstufe gerechnet, nicht als Poolish.' : `Vorteig aktuell als ${preset.prefermentType} mit 100 % Hydration gerechnet.`),
+        preset.prefermentType === 'Sauerteig'
+          ? 'Die Garzeiten sind hier bewusst als Ablaufhilfe hinterlegt, nicht als automatische Sauerteig-Prognose.'
+          : 'Für wirklich belastbare Hefemengen bei sehr kurzer oder sehr langer Gare braucht die App später noch Temperatur und genauere Gärlogik.'
       ];
 
+      const info = buildGuideAndTiming(styleKey, ferment, count, ball);
       fillList('mainList', mainLines);
       fillList('prefermentList', prefermentLines);
+      fillList('guideList', info.guide);
+      fillList('timingList', info.timing);
       fillList('notesList', notes);
     }
+
+    function roundToStep(value, step, min = 0) {
+      const decimals = (String(step).split('.')[1] || '').length;
+      const rounded = Math.round((value - min) / step) * step + min;
+      return Number(rounded.toFixed(decimals));
+    }
+
+    function stepField(targetId, direction) {
+      const input = $(targetId);
+      const step = parseFloat(input.step || '1') || 1;
+      const min = parseFloat(input.min || '-999999');
+      const max = parseFloat(input.max || '999999');
+      const current = val(targetId, parseFloat(input.value) || min || 0);
+      const next = clamp(roundToStep(current + direction * step, step, Number.isFinite(min) ? min : 0), min, max);
+      input.value = String(next).replace('.', ',');
+      compute();
+    }
+
+    document.querySelectorAll('.stepper-btn').forEach((btn) => {
+      btn.addEventListener('click', () => stepField(btn.dataset.target, Number(btn.dataset.dir || 1)));
+    });
 
     $('tabRecipes').addEventListener('click', () => switchTab('recipes'));
     $('tabCalc').addEventListener('click', () => switchTab('calc'));
