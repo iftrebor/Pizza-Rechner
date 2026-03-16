@@ -771,7 +771,7 @@
       const max = parseFloat(input.max || '999999');
       const current = val(targetId, parseFloat(input.value) || min || 0);
       const next = clamp(roundToStep(current + direction * step, step, Number.isFinite(min) ? min : 0), min, max);
-      input.value = String(next).replace('.', ',');
+      input.value = String(next);
       compute();
     }
 
