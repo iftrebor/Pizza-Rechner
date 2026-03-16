@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <title>Pizza WebApp</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --card-2:#1f2937;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --line:rgba(255,255,255,.12);
+      --accent:#f97316;
+      --accent-2:#fb923c;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f8fafc;
+        --card:#ffffff;
+        --card-2:#f1f5f9;
+        --text:#0f172a;
+        --muted:#475569;
+        --line:rgba(15,23,42,.12);
+        --accent:#ea580c;
+        --accent-2:#fb923c;
+        --ok:#16a34a;
+        --warn:#d97706;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+    body{min-height:100dvh}
+    .app{max-width:920px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 24px)}
+    .hero{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+    .logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(180deg,var(--accent-2),var(--accent));box-shadow:0 10px 30px rgba(0,0,0,.18);display:grid;place-items:center;font-size:22px}
+    h1{font-size:1.35rem;line-height:1.15;margin:0}
+    .sub{color:var(--muted);font-size:.95rem;margin-top:3px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.10)}
+    .card + .card{margin-top:14px}
+    .tabs,.seg{display:grid;gap:10px}
+    .tabs{grid-template-columns:1fr 1fr}
+    .seg.two{grid-template-columns:1fr 1fr}
+    .seg.four{grid-template-columns:repeat(2,1fr)}
+    @media (min-width:720px){
+      .grid.two{grid-template-columns:1fr 1fr}
+      .seg.four{grid-template-columns:repeat(4,1fr)}
+    }
+    .grid{display:grid;gap:12px}
+    .tap, button, select, input{
+      font:inherit;
+    }
+    .tap{
+      min-height:54px;border-radius:16px;border:1px solid var(--line);background:var(--card-2);display:flex;align-items:center;justify-content:center;
+      padding:12px 14px;font-weight:750;text-align:center;user-select:none;-webkit-user-select:none;cursor:pointer;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    }
+    .tap.active{background:linear-gradient(180deg, rgba(249,115,22,.22), rgba(249,115,22,.10));border-color:rgba(249,115,22,.7)}
+    label{display:block;font-size:.92rem;color:var(--muted);margin:0 0 6px}
+    input, select{
+      width:100%;height:54px;border-radius:16px;border:1px solid var(--line);background:var(--card-2);color:var(--text);
+      padding:0 14px;font-size:18px;font-weight:650;outline:none;
+    }
+    input:focus, select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(249,115,22,.18)}
+    .headline{font-size:1rem;font-weight:800;margin:0 0 10px}
+    .muted{color:var(--muted)}
+    .hint{font-size:.84rem;color:var(--muted);margin-top:6px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);font-size:.82rem;color:var(--muted)}
+    .result-grid{display:grid;gap:10px}
+    @media (min-width:720px){.result-grid{grid-template-columns:repeat(4,1fr)}}
+    .metric{background:var(--card-2);border:1px solid var(--line);border-radius:18px;padding:14px}
+    .metric .k{font-size:.86rem;color:var(--muted);margin-bottom:4px}
+    .metric .v{font-size:1.18rem;font-weight:800}
+    details.recipe{border:1px solid var(--line);border-radius:18px;background:var(--card-2);padding:14px}
+    details.recipe + details.recipe{margin-top:10px}
+    summary{cursor:pointer;list-style:none}
+    summary::-webkit-details-marker{display:none}
+    .recipe-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .recipe-title{font-size:1rem;font-weight:800;margin:0}
+    .recipe-sub{font-size:.88rem;color:var(--muted);margin-top:2px}
+    .recipe-body{display:grid;gap:12px;margin-top:14px}
+    @media (min-width:720px){.recipe-body{grid-template-columns:1.15fr .85fr}}
+    ul{margin:0;padding-left:18px}
+    li{margin:4px 0}
+    a{color:inherit}
+    .note{border-left:3px solid var(--warn);padding-left:10px;color:var(--muted);font-size:.9rem}
+    .ok{border-left-color:var(--ok)}
+    .footer{margin-top:16px;font-size:.82rem;color:var(--muted);text-align:center}
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="logo" aria-hidden="true">🍕</div>
+      <div>
+        <h1>Pizza WebApp</h1>
+        <div class="sub">Rezepte sammeln und Teigparameter für verschiedene Pizza-Stile anpassen.</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs" role="tablist" aria-label="App-Bereiche">
+        <div id="tabRecipes" class="tap active" role="tab" aria-selected="true" aria-controls="panelRecipes">Rezepte</div>
+        <div id="tabCalc" class="tap" role="tab" aria-selected="false" aria-controls="panelCalc">Rezept anpassen</div>
+      </div>
+    </section>
+
+    <section id="panelRecipes" class="card" role="tabpanel" aria-labelledby="tabRecipes">
+      <p class="headline">Rezeptesammlung</p>
+      <p class="muted">Die Rezeptkarten sind mit Quellenlink eingepflegt. Heferezepte sind in dieser Version konsequent auf Trockenhefe umgestellt; nur die Sauerteigpizza bleibt beim Sauerteig.</p>
+
+      <details class="recipe" open>
+        <summary>
+          <div class="recipe-head">
+            <div>
+              <div class="recipe-title">Neapolitanische Pizza mit Poolish</div>
+              <div class="recipe-sub">Übersetzt nach Cooked / Vito Iacopelli Double Fermentation Pizza Dough with Poolish</div>
+            </div>
+            <span class="pill">eingepflegt</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div>
+            <div class="headline">Zutaten</div>
+            <ul>
+              <li><strong>Poolish:</strong> 300 ml Wasser, 300 g Mehl, 1,7 g Trockenhefe, 5 g Honig</li>
+              <li><strong>Hauptteig:</strong> gesamter Poolish, 400 ml Wasser, 700 g Mehl, 30 g Salz, 10 g Olivenöl</li>
+            </ul>
+            <div class="headline" style="margin-top:12px">Ablauf</div>
+            <ul>
+              <li>Poolish mischen und 1 h bei Raumtemperatur anspringen lassen</li>
+              <li>Danach 16–24 h im Kühlschrank reifen lassen</li>
+              <li>Für den Hauptteig Poolish, Wasser, Mehl, Salz und Olivenöl mischen</li>
+              <li>Teig abgedeckt weitere 16–24 h im Kühlschrank reifen lassen</li>
+              <li>Danach 1–2 h akklimatisieren lassen</li>
+              <li>Teiglinge formen und weitere 2–4 h bei Raumtemperatur ruhen lassen</li>
+              <li>Bei maximaler Ofentemperatur backen, bis der Rand knusprig und goldbraun ist</li>
+            </ul>
+          </div>
+          <div>
+            <div class="headline">Kennwerte</div>
+            <ul>
+              <li>Gesamtmehl: 1000 g</li>
+              <li>Gesamtwasser: 700 g</li>
+              <li>Hydration: 70 %</li>
+              <li>Salz: 3 %</li>
+              <li>Öl: 1 %</li>
+              <li>Poolish-Anteil: 30 % des Mehls</li>
+              <li>Gesamtgare laut Vorlage: ca. 36–55 h inkl. Kaltgare und Stückgare</li>
+            </ul>
+            <p class="hint"><a href="https://cooked.wiki/saved/a3e4cceb-c3f4-45d5-a1b3-123b2c84dd1a" target="_blank" rel="noreferrer">Quelle öffnen</a></p>
+          </div>
+        </div>
+      </details>
+
+      <details class="recipe">
+        <summary>
+          <div class="recipe-head">
+            <div>
+              <div class="recipe-title">Römische Pizza</div>
+              <div class="recipe-sub">Quelle: Waldis Pizza</div>
+            </div>
+            <span class="pill">eingepflegt</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div>
+            <div class="headline">Zutaten</div>
+            <ul>
+              <li>1000 g Pizzamehl Tipo 00</li>
+              <li>0,5 g Trockenhefe</li>
+              <li>580 g kaltes Wasser</li>
+              <li>30 g Meersalz</li>
+              <li>30 ml Olivenöl</li>
+              <li>Tomatensoße und Belag nach Wahl</li>
+            </ul>
+            <div class="headline" style="margin-top:12px">Ablauf</div>
+            <ul>
+              <li>Komplettes Wasser in die Schüssel geben und Hefe darin auflösen</li>
+              <li>Ca. 50 % des Mehls einrühren</li>
+              <li>Öl und Salz einarbeiten</li>
+              <li>Restliches Mehl zugeben und gründlich kneten</li>
+              <li>60 Min. Stockgare</li>
+              <li>Teiglinge formen und 12 h im Kühlschrank Stückgare</li>
+              <li>Danach weitere 4 h bei Raumtemperatur</li>
+              <li>Mit dem Nudelholz dünn ausrollen und bei ca. 350 °C 3–5 Min. backen</li>
+            </ul>
+          </div>
+          <div>
+            <div class="headline">Kennwerte</div>
+            <ul>
+              <li>Hydration: 58 %</li>
+              <li>Salz: 3 %</li>
+              <li>Öl: 3 %</li>
+              <li>Hefe: 0,05 % Trockenhefe</li>
+              <li>Teigherstellung: 12–24 h</li>
+              <li>Portionen: 6–7 Pizzen</li>
+            </ul>
+            <p class="hint"><a href="https://www.waldispizza.de/blog/roemischer-pizzateig" target="_blank" rel="noreferrer">Quelle öffnen</a></p>
+          </div>
+        </div>
+      </details>
+
+      <details class="recipe">
+        <summary>
+          <div class="recipe-head">
+            <div>
+              <div class="recipe-title">Blechpizza</div>
+              <div class="recipe-sub">Quelle: Waldis Pizza</div>
+            </div>
+            <span class="pill">eingepflegt</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div>
+            <div class="headline">Zutaten</div>
+            <ul>
+              <li>340 g Mehl Typ 00</li>
+              <li>1 g Trockenhefe</li>
+              <li>10 g feines Meersalz</li>
+              <li>10 ml Olivenöl</li>
+              <li>240 ml kaltes Wasser</li>
+            </ul>
+            <div class="headline" style="margin-top:12px">Ablauf</div>
+            <ul>
+              <li>2 h ruhen lassen</li>
+              <li>Über Nacht in den Kühlschrank</li>
+              <li>4–5 h vor dem Essen aus dem Kühlschrank holen</li>
+              <li>280 °C Ober-/Unterhitze vorheizen</li>
+              <li>Mit Tomatensauce 7–8 Min. im Blech vorbacken</li>
+              <li>Belegen und 3–5 Min. direkt auf dem Stein fertig backen</li>
+            </ul>
+          </div>
+          <div>
+            <div class="headline">Kennwerte</div>
+            <ul>
+              <li>Hydration: ca. 70,6 %</li>
+              <li>Salz: ca. 2,9 %</li>
+              <li>Öl: ca. 2,9 %</li>
+              <li>Hefe: ca. 0,29 % Trockenhefe</li>
+            </ul>
+            <p class="hint"><a href="https://www.waldispizza.de/blog/blechpizza-rezept" target="_blank" rel="noreferrer">Quelle öffnen</a></p>
+          </div>
+        </div>
+      </details>
+
+      <details class="recipe">
+        <summary>
+          <div class="recipe-head">
+            <div>
+              <div class="recipe-title">Detroit Style Pizza</div>
+              <div class="recipe-sub">Poolish + Hauptteig</div>
+            </div>
+            <span class="pill">eingepflegt</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div>
+            <div class="headline">Poolish</div>
+            <ul>
+              <li>300 g Wasser</li>
+              <li>300 g Mehl</li>
+              <li>1,5 g Trockenhefe</li>
+              <li>2 h bei Raumtemperatur, dann über Nacht in den Kühlschrank</li>
+            </ul>
+            <div class="headline" style="margin-top:12px">Hauptteig</div>
+            <ul>
+              <li>gesamter Poolish</li>
+              <li>1 g Trockenhefe</li>
+              <li>140 g Mehl</li>
+              <li>15 g Salz</li>
+              <li>15 g Olivenöl</li>
+              <li>ca. 2 h Raumtemperatur bis Verdopplung</li>
+              <li>Danach formen, ins gefettete Blech, nach und nach ausbreiten</li>
+              <li>6–8 Min. bei 350 °C mit Tomatensauce vorbacken, dann belegen und fertig backen</li>
+            </ul>
+          </div>
+          <div>
+            <div class="headline">Kennwerte</div>
+            <ul>
+              <li>Gesamtmehl: 440 g</li>
+              <li>Gesamtwasser: 300 g</li>
+              <li>Hydration: ca. 68,2 %</li>
+              <li>Salz: ca. 3,4 %</li>
+              <li>Öl: ca. 3,4 %</li>
+              <li>Gesamthefe: ca. 0,57 % Trockenhefe</li>
+              <li>Poolish-Anteil: ca. 68,2 % des Mehls</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="recipe">
+        <summary>
+          <div class="recipe-head">
+            <div>
+              <div class="recipe-title">Sauerteigpizza</div>
+              <div class="recipe-sub">Zusätzlich aus deiner Nachricht übernommen</div>
+            </div>
+            <span class="pill">extra</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div>
+            <div class="headline">Zutaten für 6 Pizzen</div>
+            <ul>
+              <li><strong>Sauerteig-Vorteig:</strong> 20 g Sauerteig, 200 g Wasser, 200 g Pizzamehl</li>
+              <li><strong>Hauptteig:</strong> Vorteig, 800 g Pizzamehl, 450 g Wasser, 27 g Salz</li>
+              <li><strong>Tomatensauce:</strong> 400 g Tomaten, 5 g Olivenöl, 5 g Salz, Basilikum</li>
+            </ul>
+            <div class="headline" style="margin-top:12px">Ablauf</div>
+            <ul>
+              <li>Vorteig 8–12 h bei Raumtemperatur</li>
+              <li>Hauptteig kneten, 1 h Raumtemperatur, dabei 2× dehnen und falten</li>
+              <li>In 6 Teiglinge à 250–280 g teilen</li>
+              <li>1 h Raumtemperatur, dann 12–24 h Kühlschrank</li>
+              <li>Vor dem Backen 2 h akklimatisieren</li>
+              <li>Backen bei 280 °C: 2–3 Min. vorbacken, dann belegen und 3–4 Min. fertig backen</li>
+            </ul>
+          </div>
+          <div>
+            <div class="headline">Kennwerte</div>
+            <ul>
+              <li>Hydration Gesamtteig: ca. 65 %</li>
+              <li>Salz: ca. 2,7 %</li>
+              <li>Vorteig-Anteil: 20 % des Mehls</li>
+              <li>250–280 g pro Pizza</li>
+            </ul>
+            <p class="hint"><a href="https://www.marcelpaa.com/rezepte/sauerteig-pizza-mit-sven-teichmann/" target="_blank" rel="noreferrer">Quelle öffnen</a></p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="panelCalc" class="card hidden" role="tabpanel" aria-labelledby="tabCalc">
+      <p class="headline">Rezept anpassen</p>
+      <div class="grid two">
+        <div>
+          <label for="style">Style</label>
+          <select id="style">
+            <option value="napoli">Neapolitanisch mit Poolish</option>
+            <option value="romana">Römische Pizza</option>
+            <option value="blech">Blechpizza</option>
+            <option value="detroit">Detroit Style</option>
+          </select>
+          <div class="hint" id="styleHint">Vorläufiger Preset – bitte später mit deinem Originalrezept schärfen.</div>
+        </div>
+        <div>
+          <label for="ferment">Garzeit gesamt (h)</label>
+          <input id="ferment" type="number" min="4" max="72" step="1" value="24" inputmode="decimal" enterkeyhint="done">
+          <div class="hint">Die Hefe wird als Näherung aus der Basis-Garzeit skaliert.</div>
+        </div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div>
+          <label for="count">Anzahl Pizzen / Bleche</label>
+          <input id="count" type="number" min="1" max="20" step="1" value="4" inputmode="decimal" enterkeyhint="done">
+        </div>
+        <div>
+          <label for="ball">Teigballengröße bzw. Teigstück (g)</label>
+          <input id="ball" type="number" min="100" max="1200" step="5" value="260" inputmode="decimal" enterkeyhint="done">
+        </div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div>
+          <label for="hydration">Hydration (%)</label>
+          <input id="hydration" type="number" min="50" max="90" step="0.5" value="65" inputmode="decimal" enterkeyhint="done">
+        </div>
+        <div>
+          <label for="salt">Salz (%)</label>
+          <input id="salt" type="number" min="1.5" max="4.5" step="0.1" value="2.8" inputmode="decimal" enterkeyhint="done">
+        </div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div>
+          <label for="oil">Olivenöl (%)</label>
+          <input id="oil" type="number" min="0" max="8" step="0.1" value="0" inputmode="decimal" enterkeyhint="done">
+        </div>
+        <div>
+          <label for="prefermentPct">Vorteig-Anteil bezogen auf Mehl (%)</label>
+          <input id="prefermentPct" type="number" min="0" max="80" step="1" value="30" inputmode="decimal" enterkeyhint="done">
+          <div class="hint" id="prefermentHint">100 %-Hydration Poolish</div>
+        </div>
+      </div>
+
+      <div class="result-grid" style="margin-top:14px">
+        <div class="metric"><div class="k">Gesamtteig</div><div class="v" id="outDough">–</div></div>
+        <div class="metric"><div class="k">Gesamtmehl</div><div class="v" id="outFlour">–</div></div>
+        <div class="metric"><div class="k">Gesamtwasser</div><div class="v" id="outWater">–</div></div>
+        <div class="metric"><div class="k">Trockenhefe gesamt</div><div class="v" id="outYeast">–</div></div>
+      </div>
+
+      <div class="grid two" style="margin-top:12px">
+        <div class="card" style="margin:0;padding:14px;background:var(--card-2)">
+          <div class="headline">Hauptteig</div>
+          <ul id="mainList"></ul>
+        </div>
+        <div class="card" style="margin:0;padding:14px;background:var(--card-2)">
+          <div class="headline">Vorteig</div>
+          <ul id="prefermentList"></ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin:12px 0 0;padding:14px;background:var(--card-2)">
+        <div class="headline">Hinweise</div>
+        <ul id="notesList"></ul>
+      </div>
+    </section>
+
+    <div class="footer">Stand dieser Version: Quellenlinks ergänzt und Heferezepte auf Trockenhefe vereinheitlicht.</div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fmt1 = (n) => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+    const fmt2 = (n) => (Math.round(n * 100) / 100).toFixed(2).replace('.', ',');
+    const grams = (n) => `${fmt1(n)} g`;
+    const percent = (n) => `${fmt1(n)} %`;
+    const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+    const val = (id, fallback = 0) => {
+      const raw = parseFloat(String($(id).value).replace(',', '.'));
+      return Number.isFinite(raw) ? raw : fallback;
+    };
+
+    const presets = {
+      napoli: {
+        label: 'Neapolitanisch mit Poolish',
+        count: 6,
+        ball: 290,
+        hydration: 70,
+        salt: 3.0,
+        oil: 1.0,
+        prefermentPct: 30,
+        prefermentType: 'Poolish',
+        baseHours: 36,
+        baseYeastPct: 0.17,
+        note: 'Aus dem von dir verlinkten Poolish-Rezept übernommen, auf Deutsch übertragen und auf Trockenhefe umgerechnet.'
+      },
+      romana: {
+        label: 'Römische Pizza',
+        count: 6,
+        ball: 275,
+        hydration: 58,
+        salt: 3.0,
+        oil: 3.0,
+        prefermentPct: 0,
+        prefermentType: 'Direktteig',
+        baseHours: 17,
+        baseYeastPct: 0.05,
+        note: 'Aus dem von dir verlinkten Waldis-Rezept übernommen.'
+      },
+      blech: {
+        label: 'Blechpizza',
+        count: 1,
+        ball: 600,
+        hydration: 70.6,
+        salt: 2.9,
+        oil: 2.9,
+        prefermentPct: 0,
+        prefermentType: 'Direktteig',
+        baseHours: 18,
+        baseYeastPct: 0.29,
+        note: 'Aus deinem gelieferten Rezept abgeleitet.'
+      },
+      detroit: {
+        label: 'Detroit Style',
+        count: 1,
+        ball: 772,
+        hydration: 68.2,
+        salt: 3.4,
+        oil: 3.4,
+        prefermentPct: 68.2,
+        prefermentType: 'Poolish',
+        baseHours: 16,
+        baseYeastPct: 0.57,
+        note: 'Aus deinem gelieferten Rezept abgeleitet.'
+      }
+    };
+
+    function switchTab(tab) {
+      const recipes = tab === 'recipes';
+      $('tabRecipes').classList.toggle('active', recipes);
+      $('tabCalc').classList.toggle('active', !recipes);
+      $('tabRecipes').setAttribute('aria-selected', String(recipes));
+      $('tabCalc').setAttribute('aria-selected', String(!recipes));
+      $('panelRecipes').classList.toggle('hidden', !recipes);
+      $('panelCalc').classList.toggle('hidden', recipes);
+    }
+
+    function applyPreset(styleKey) {
+      const p = presets[styleKey];
+      $('count').value = p.count;
+      $('ball').value = p.ball;
+      $('hydration').value = p.hydration;
+      $('salt').value = p.salt;
+      $('oil').value = p.oil;
+      $('prefermentPct').value = p.prefermentPct;
+      $('ferment').value = p.baseHours;
+      $('styleHint').textContent = p.note;
+      $('prefermentHint').textContent = p.prefermentType === 'Direktteig' ? 'Kein separater Vorteig vorgesehen' : '100 %-Hydration Poolish';
+      compute();
+    }
+
+    function yeastPctForHours(basePct, baseHours, targetHours) {
+      const scaled = basePct * (baseHours / Math.max(1, targetHours));
+      return clamp(scaled, 0.02, 1.2);
+    }
+
+    function li(text) {
+      const node = document.createElement('li');
+      node.textContent = text;
+      return node;
+    }
+
+    function fillList(id, lines) {
+      const list = $(id);
+      list.innerHTML = '';
+      lines.forEach((line) => list.appendChild(li(line)));
+    }
+
+    function compute() {
+      const styleKey = $('style').value;
+      const preset = presets[styleKey];
+      const count = clamp(val('count', preset.count), 1, 20);
+      const ball = clamp(val('ball', preset.ball), 100, 1200);
+      const hydration = clamp(val('hydration', preset.hydration), 50, 90);
+      const saltPct = clamp(val('salt', preset.salt), 1.5, 4.5);
+      const oilPct = clamp(val('oil', preset.oil), 0, 8);
+      const prefermentPct = clamp(val('prefermentPct', preset.prefermentPct), 0, 80);
+      const ferment = clamp(val('ferment', preset.baseHours), 4, 72);
+
+      const totalDough = count * ball;
+      const flour = totalDough / (1 + hydration / 100 + saltPct / 100 + oilPct / 100);
+      const water = flour * hydration / 100;
+      const salt = flour * saltPct / 100;
+      const oil = flour * oilPct / 100;
+      const yeastPct = yeastPctForHours(preset.baseYeastPct, preset.baseHours, ferment);
+      const yeast = flour * yeastPct / 100;
+
+      const prefermentFlour = flour * prefermentPct / 100;
+      const prefermentWater = preset.prefermentType === 'Direktteig' ? 0 : prefermentFlour;
+      const prefermentYeast = preset.prefermentType === 'Direktteig' ? 0 : yeast * 0.6;
+      const mainFlour = flour - prefermentFlour;
+      const mainWater = water - prefermentWater;
+      const mainYeast = yeast - prefermentYeast;
+
+      $('outDough').textContent = grams(totalDough);
+      $('outFlour').textContent = grams(flour);
+      $('outWater').textContent = grams(water);
+      $('outYeast').textContent = grams(yeast);
+
+      const mainLines = [
+        `Mehl: ${grams(mainFlour)}`,
+        `Wasser: ${grams(mainWater)}`,
+        `Salz: ${grams(salt)}`,
+        `Olivenöl: ${grams(oil)}`,
+        `Trockenhefe: ${grams(mainYeast)}`
+      ];
+
+      const prefermentLines = preset.prefermentType === 'Direktteig'
+        ? ['Kein separater Vorteig für diesen Preset vorgesehen.']
+        : [
+            `${preset.prefermentType}: ${percent(prefermentPct)} des Mehls`,
+            `Mehl: ${grams(prefermentFlour)}`,
+            `Wasser: ${grams(prefermentWater)}`,
+            `Trockenhefe: ${grams(prefermentYeast)}`
+          ];
+
+      const notes = [
+        `${preset.label}: ${preset.note}`,
+        `Hefe-Näherung: Basis ${percent(preset.baseYeastPct)} bei ${preset.baseHours} h → skaliert auf ${ferment} h ergibt ${percent(yeastPct)}.`,
+        `Hydration ${percent(hydration)}, Salz ${percent(saltPct)}, Öl ${percent(oilPct)}.`,
+        preset.prefermentType === 'Direktteig'
+          ? 'Für Blechpizza ist aktuell kein separater Vorteig hinterlegt.'
+          : `Vorteig aktuell als ${preset.prefermentType} mit 100 % Hydration gerechnet.`,
+        'Für wirklich belastbare Hefemengen bei sehr kurzer oder sehr langer Gare braucht die App später noch Temperatur und genauere Gärlogik.'
+      ];
+
+      fillList('mainList', mainLines);
+      fillList('prefermentList', prefermentLines);
+      fillList('notesList', notes);
+    }
+
+    $('tabRecipes').addEventListener('click', () => switchTab('recipes'));
+    $('tabCalc').addEventListener('click', () => switchTab('calc'));
+    $('style').addEventListener('change', (e) => applyPreset(e.target.value));
+
+    ['count','ball','hydration','salt','oil','prefermentPct','ferment'].forEach((id) => {
+      $(id).addEventListener('input', compute);
+      $(id).addEventListener('change', compute);
+    });
+
+    applyPreset('napoli');
+    switchTab('recipes');
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
